@@ -1,75 +1,65 @@
-// @flow
+// This is a bastardization of the true StyleObj type located in
+// react-native/Libraries/StyleSheet/StyleSheetTypes. We unfortunately can't
+// import that here, and it's too lengthy (and consequently too brittle) to
+// copy-paste here either.
+type StyleObj =
+	| null
+	| void
+	| number
+	| false
+	| ''
+	| $ReadOnlyArray<StyleObj>
+	| { [name: string]: any };
+type ViewStyleProp = StyleObj;
+type TextStyleProp = StyleObj;
+type AnimatedViewStyleProp = StyleObj;
+type AnimatedTextStyleProp = StyleObj;
+
+// This is copied from the Layout type in
+// react-native-tab-view/src/TabViewTypeDefinitions
+type TabViewLayout = {
+	height: number,
+	width: number,
+};
+
+// This is copied from react-native/Libraries/Image/ImageSource.js
+type ImageURISource = {
+	uri?: string,
+	bundle?: string,
+	method?: string,
+	headers?: Object,
+	body?: string,
+	cache?: 'default' | 'reload' | 'force-cache' | 'only-if-cached',
+	width?: number,
+	height?: number,
+	scale?: number,
+};
+type ImageSource = ImageURISource | number | Array<ImageURISource>;
+
+// This one is too large to copy. Actual definition is in
+// react-native/Libraries/Animated/src/nodes/AnimatedValue.js
+type AnimatedValue = Object;
+
+type HeaderForceInset = {
+	horizontal?: string,
+	vertical?: string,
+	left?: string,
+	right?: string,
+	top?: string,
+	bottom?: string,
+};
 
 declare module 'react-navigation' {
-  /**
-   * First, a bunch of things we would love to import but instead must
-   * reconstruct (mostly copy-pasted).
-   */
-
-  // This is a bastardization of the true StyleObj type located in
-  // react-native/Libraries/StyleSheet/StyleSheetTypes. We unfortunately can't
-  // import that here, and it's too lengthy (and consequently too brittle) to
-  // copy-paste here either.
-  declare type StyleObj =
-    | null
-    | void
-    | number
-    | false
-    | ''
-    | $ReadOnlyArray<StyleObj>
-    | { [name: string]: any };
-  declare type ViewStyleProp = StyleObj;
-  declare type TextStyleProp = StyleObj;
-  declare type AnimatedViewStyleProp = StyleObj;
-  declare type AnimatedTextStyleProp = StyleObj;
-
-  // This is copied from the Layout type in
-  // react-native-tab-view/src/TabViewTypeDefinitions
-  declare type TabViewLayout = {
-    height: number,
-    width: number,
-  };
-
-  // This is copied from react-native/Libraries/Image/ImageSource.js
-  declare type ImageURISource = {
-    uri?: string,
-    bundle?: string,
-    method?: string,
-    headers?: Object,
-    body?: string,
-    cache?: 'default' | 'reload' | 'force-cache' | 'only-if-cached',
-    width?: number,
-    height?: number,
-    scale?: number,
-  };
-  declare type ImageSource = ImageURISource | number | Array<ImageURISource>;
-
-  // This one is too large to copy. Actual definition is in
-  // react-native/Libraries/Animated/src/nodes/AnimatedValue.js
-  declare type AnimatedValue = Object;
-
-  declare type HeaderForceInset = {
-    horizontal?: string,
-    vertical?: string,
-    left?: string,
-    right?: string,
-    top?: string,
-    bottom?: string,
-  };
-
-  /**
-   * Next, all the type declarations
-   */
 
   /**
    * Navigation State + Action
    */
 
-  declare export type NavigationParams = {
+  declare type NavigationParams = {
     [key: string]: mixed,
   };
 
-  declare export type NavigationNavigateAction = {|
+  declare type NavigationNavigateAction = {|
     type: 'Navigation/NAVIGATE',
     routeName: string,
     params?: NavigationParams,
@@ -80,12 +70,12 @@ declare module 'react-navigation' {
     key?: string,
   |};
 
-  declare export type NavigationBackAction = {|
+  declare type NavigationBackAction = {|
     type: 'Navigation/BACK',
     key?: ?string,
   |};
 
-  declare export type NavigationSetParamsAction = {|
+  declare type NavigationSetParamsAction = {|
     type: 'Navigation/SET_PARAMS',
 
     // The key of the route where the params should be set
@@ -95,40 +85,40 @@ declare module 'react-navigation' {
     params: NavigationParams,
   |};
 
-  declare export type NavigationInitAction = {|
+  declare type NavigationInitAction = {|
     type: 'Navigation/INIT',
     params?: NavigationParams,
   |};
 
-  declare export type NavigationResetAction = {|
+  declare type NavigationResetAction = {|
     type: 'Navigation/RESET',
     index: number,
     key?: ?string,
     actions: Array<NavigationNavigateAction>,
   |};
 
-  declare export type NavigationUriAction = {|
+  declare type NavigationUriAction = {|
     type: 'Navigation/URI',
     uri: string,
   |};
 
-  declare export type NavigationReplaceAction = {|
+  declare type NavigationReplaceAction = {|
     type: 'Navigation/REPLACE',
     key: string,
     routeName: string,
     params?: NavigationParams,
     action?: NavigationNavigateAction,
   |};
-  declare export type NavigationPopAction = {|
+  declare type NavigationPopAction = {|
     type: 'Navigation/POP',
     n?: number,
     immediate?: boolean,
   |};
-  declare export type NavigationPopToTopAction = {|
+  declare type NavigationPopToTopAction = {|
     type: 'Navigation/POP_TO_TOP',
     immediate?: boolean,
   |};
-  declare export type NavigationPushAction = {|
+  declare type NavigationPushAction = {|
     type: 'Navigation/PUSH',
     routeName: string,
     params?: NavigationParams,
@@ -136,7 +126,7 @@ declare module 'react-navigation' {
     key?: string,
   |};
 
-  declare export type NavigationAction =
+  declare type NavigationAction =
     | NavigationInitAction
     | NavigationNavigateAction
     | NavigationReplaceAction
@@ -160,7 +150,7 @@ declare module 'react-navigation' {
    * The state for the root navigator of our app represents the whole navigation
    * state for the whole app.
    */
-  declare export type NavigationState = {
+  declare type NavigationState = {
     /**
      * Index refers to the active child route in the routes array.
      */
@@ -168,11 +158,11 @@ declare module 'react-navigation' {
     routes: Array<NavigationRoute>,
   };
 
-  declare export type NavigationRoute =
+  declare type NavigationRoute =
     | NavigationLeafRoute
     | NavigationStateRoute;
 
-  declare export type NavigationLeafRoute = {
+  declare type NavigationLeafRoute = {
     /**
      * React's key used by some navigators. No need to specify these manually,
      * they will be defined by the router.
@@ -194,19 +184,19 @@ declare module 'react-navigation' {
     params?: NavigationParams,
   };
 
-  declare export type NavigationStateRoute = NavigationLeafRoute &
+  declare type NavigationStateRoute = NavigationLeafRoute &
     NavigationState;
 
   /**
    * Router
    */
 
-  declare export type NavigationScreenOptionsGetter<Options: {}> = (
+  declare type NavigationScreenOptionsGetter<Options: {}> = (
     navigation: NavigationScreenProp<NavigationRoute>,
     screenProps?: {}
   ) => Options;
 
-  declare export type NavigationRouter<State: NavigationState, Options: {}> = {
+  declare type NavigationRouter<State: NavigationState, Options: {}> = {
     /**
      * The reducer that outputs the new navigation state for a given action,
      * with an optional previous state. When the action is considered handled
@@ -245,40 +235,40 @@ declare module 'react-navigation' {
     getScreenOptions: NavigationScreenOptionsGetter<Options>,
   };
 
-  declare export type NavigationScreenDetails<T> = {
+  declare type NavigationScreenDetails<T> = {
     options: T,
     state: NavigationRoute,
     navigation: NavigationScreenProp<NavigationRoute>,
   };
 
-  declare export type NavigationScreenOptions = {
+  declare type NavigationScreenOptions = {
     title?: string,
   };
 
-  declare export type NavigationScreenConfigProps = $Shape<{
+  declare type NavigationScreenConfigProps = $Shape<{
     navigation: NavigationScreenProp<NavigationRoute>,
     screenProps: {},
   }>;
 
-  declare export type NavigationScreenConfig<Options> =
+  declare type NavigationScreenConfig<Options> =
     | Options
     | (({
         ...$Exact<NavigationScreenConfigProps>,
         navigationOptions: Options,
       }) => Options);
 
-  declare export type NavigationComponent =
+  declare type NavigationComponent =
     | NavigationScreenComponent<NavigationRoute, *, *>
     | NavigationContainer<NavigationStateRoute, *, *>;
 
-  declare export type NavigationScreenComponent<
+  declare type NavigationScreenComponent<
     Route: NavigationRoute,
     Options: {},
     Props: {}
   > = React$ComponentType<NavigationNavigatorProps<Options, Route> & Props> &
     ({} | { navigationOptions: NavigationScreenConfig<Options> });
 
-  declare export type NavigationNavigator<
+  declare type NavigationNavigator<
     State: NavigationState,
     Options: {},
     Props: {}
@@ -287,14 +277,14 @@ declare module 'react-navigation' {
     navigationOptions?: ?NavigationScreenConfig<Options>,
   };
 
-  declare export type NavigationRouteConfig =
+  declare type NavigationRouteConfig =
     | NavigationComponent
     | ({
         navigationOptions?: NavigationScreenConfig<*>,
         path?: string,
       } & NavigationScreenRouteConfig);
 
-  declare export type NavigationScreenRouteConfig =
+  declare type NavigationScreenRouteConfig =
     | {
         screen: NavigationComponent,
       }
@@ -302,11 +292,11 @@ declare module 'react-navigation' {
         getScreen: () => NavigationComponent,
       };
 
-  declare export type NavigationPathsConfig = {
+  declare type NavigationPathsConfig = {
     [routeName: string]: string,
   };
 
-  declare export type NavigationRouteConfigMap = {
+  declare type NavigationRouteConfigMap = {
     [routeName: string]: NavigationRouteConfig,
   };
 
@@ -314,9 +304,9 @@ declare module 'react-navigation' {
    * Header
    */
 
-  declare export type HeaderMode = 'float' | 'screen' | 'none';
+  declare type HeaderMode = 'float' | 'screen' | 'none';
 
-  declare export type HeaderProps = $Shape<
+  declare type HeaderProps = $Shape<
     NavigationSceneRendererProps & {
       mode: HeaderMode,
       router: NavigationRouter<NavigationState, NavigationStackScreenOptions>,
@@ -333,7 +323,7 @@ declare module 'react-navigation' {
    * Stack Navigator
    */
 
-  declare export type NavigationStackScreenOptions = NavigationScreenOptions & {
+  declare type NavigationStackScreenOptions = NavigationScreenOptions & {
     header?: ?(React$Node | (HeaderProps => React$Node)),
     headerTransparent?: boolean,
     headerTitle?: string | React$Node | React$ElementType,
@@ -355,14 +345,14 @@ declare module 'react-navigation' {
     gestureDirection?: 'default' | 'inverted',
   };
 
-  declare export type NavigationStackRouterConfig = {|
+  declare type NavigationStackRouterConfig = {|
     initialRouteName?: string,
     initialRouteParams?: NavigationParams,
     paths?: NavigationPathsConfig,
     navigationOptions?: NavigationScreenConfig<*>,
   |};
 
-  declare export type NavigationStackViewConfig = {|
+  declare type NavigationStackViewConfig = {|
     mode?: 'card' | 'modal',
     headerMode?: HeaderMode,
     headerTransitionPreset?: 'fade-in-place' | 'uikit',
@@ -372,7 +362,7 @@ declare module 'react-navigation' {
     onTransitionEnd?: () => void,
   |};
 
-  declare export type StackNavigatorConfig = {|
+  declare type StackNavigatorConfig = {|
     ...NavigationStackViewConfig,
     ...NavigationStackRouterConfig,
   |};
@@ -381,7 +371,7 @@ declare module 'react-navigation' {
    * Switch Navigator
    */
 
-  declare export type NavigationSwitchRouterConfig = {|
+  declare type NavigationSwitchRouterConfig = {|
     initialRouteName?: string,
     initialRouteParams?: NavigationParams,
     paths?: NavigationPathsConfig,
@@ -395,7 +385,7 @@ declare module 'react-navigation' {
    * Tab Navigator
    */
 
-  declare export type NavigationTabRouterConfig = {|
+  declare type NavigationTabRouterConfig = {|
     initialRouteName?: string,
     initialRouteParams?: NavigationParams,
     paths?: NavigationPathsConfig,
@@ -413,7 +403,7 @@ declare module 'react-navigation' {
     tintColor?: ?string,
   };
 
-  declare export type NavigationTabScreenOptions = {|
+  declare type NavigationTabScreenOptions = {|
     ...$Exact<NavigationScreenOptions>,
     tabBarIcon?:
       | React$Node
@@ -434,7 +424,7 @@ declare module 'react-navigation' {
    * Drawer
    */
 
-  declare export type NavigationDrawerScreenOptions = {|
+  declare type NavigationDrawerScreenOptions = {|
     ...$Exact<NavigationScreenOptions>,
     drawerIcon?:
       | React$Node
@@ -449,38 +439,38 @@ declare module 'react-navigation' {
    * Navigator Prop
    */
 
-  declare export type NavigationDispatch = (
+  declare type NavigationDispatch = (
     action: NavigationAction
   ) => boolean;
 
-  declare export type NavigationProp<S> = {
+  declare type NavigationProp<S> = {
     +state: S,
     dispatch: NavigationDispatch,
   };
 
-  declare export type EventType =
+  declare type EventType =
     | 'willFocus'
     | 'didFocus'
     | 'willBlur'
     | 'didBlur'
     | 'action';
 
-  declare export type NavigationEventPayload = {
+  declare type NavigationEventPayload = {
     type: EventType,
     action: NavigationAction,
     state: NavigationState,
     lastState: ?NavigationState,
   };
 
-  declare export type NavigationEventCallback = (
+  declare type NavigationEventCallback = (
     payload: NavigationEventPayload
   ) => void;
 
-  declare export type NavigationEventSubscription = {
+  declare type NavigationEventSubscription = {
     remove: () => void,
   };
 
-  declare export type NavigationScreenProp<+S> = {
+  declare type NavigationScreenProp<+S> = {
     +state: S,
     dispatch: NavigationDispatch,
     goBack: (routeKey?: ?string) => boolean,
@@ -508,7 +498,7 @@ declare module 'react-navigation' {
     popToTop: (params?: { immediate?: boolean }) => boolean,
   };
 
-  declare export type NavigationNavigatorProps<O: {}, S: {}> = $Shape<{
+  declare type NavigationNavigatorProps<O: {}, S: {}> = $Shape<{
     navigation: NavigationScreenProp<S>,
     screenProps?: {},
     navigationOptions?: O,
@@ -518,7 +508,7 @@ declare module 'react-navigation' {
    * Navigation container
    */
 
-  declare export type NavigationContainer<
+  declare type NavigationContainer<
     State: NavigationState,
     Options: {},
     Props: {}
@@ -527,7 +517,7 @@ declare module 'react-navigation' {
     navigationOptions?: ?NavigationScreenConfig<Options>,
   };
 
-  declare export type NavigationContainerProps<S: {}, O: {}> = $Shape<{
+  declare type NavigationContainerProps<S: {}, O: {}> = $Shape<{
     uriPrefix?: string | RegExp,
     onNavigationStateChange?: ?(
       NavigationState,
@@ -543,9 +533,9 @@ declare module 'react-navigation' {
    * Gestures, Animations, and Interpolators
    */
 
-  declare export type NavigationGestureDirection = 'horizontal' | 'vertical';
+  declare type NavigationGestureDirection = 'horizontal' | 'vertical';
 
-  declare export type NavigationLayout = {
+  declare type NavigationLayout = {
     height: AnimatedValue,
     initHeight: number,
     initWidth: number,
@@ -553,7 +543,7 @@ declare module 'react-navigation' {
     width: AnimatedValue,
   };
 
-  declare export type NavigationScene = {
+  declare type NavigationScene = {
     index: number,
     isActive: boolean,
     isStale: boolean,
@@ -561,7 +551,7 @@ declare module 'react-navigation' {
     route: NavigationRoute,
   };
 
-  declare export type NavigationTransitionProps = $Shape<{
+  declare type NavigationTransitionProps = $Shape<{
     // The layout of the screen container
     layout: NavigationLayout,
 
@@ -596,9 +586,9 @@ declare module 'react-navigation' {
   // rendering a transition. The exception is that the passed scene is not the
   // active scene but is instead the scene that the renderer should render
   // content for.
-  declare export type NavigationSceneRendererProps = NavigationTransitionProps;
+  declare type NavigationSceneRendererProps = NavigationTransitionProps;
 
-  declare export type NavigationTransitionSpec = {
+  declare type NavigationTransitionSpec = {
     duration?: number,
     // An easing function from `Easing`.
     easing?: (t: number) => number,
@@ -609,7 +599,7 @@ declare module 'react-navigation' {
   /**
    * Describes a visual transition from one screen to another.
    */
-  declare export type TransitionConfig = {
+  declare type TransitionConfig = {
     // The basics properties of the animation, such as duration and easing
     transitionSpec?: NavigationTransitionSpec,
     // How to animate position and opacity of the screen
@@ -625,19 +615,19 @@ declare module 'react-navigation' {
     containerStyle?: ViewStyleProp,
   };
 
-  declare export type NavigationAnimationSetter = (
+  declare type NavigationAnimationSetter = (
     position: AnimatedValue,
     newState: NavigationState,
     lastState: NavigationState
   ) => void;
 
-  declare export type NavigationSceneRenderer = () => React$Node;
+  declare type NavigationSceneRenderer = () => React$Node;
 
-  declare export type NavigationStyleInterpolator = (
+  declare type NavigationStyleInterpolator = (
     props: NavigationSceneRendererProps
   ) => AnimatedViewStyleProp;
 
-  declare export type LayoutEvent = {
+  declare type LayoutEvent = {
     nativeEvent: {
       layout: {
         x: number,
@@ -648,7 +638,7 @@ declare module 'react-navigation' {
     },
   };
 
-  declare export type SceneIndicesForInterpolationInputRange = {
+  declare type SceneIndicesForInterpolationInputRange = {
     first: number,
     last: number,
   };
@@ -657,11 +647,11 @@ declare module 'react-navigation' {
    * Now we type the actual exported module
    */
 
-  declare export function createNavigationContainer<S: NavigationState, O: {}>(
+  declare function createNavigationContainer<S: NavigationState, O: {}>(
     Component: NavigationNavigator<S, O, *>
   ): NavigationContainer<S, O, *>;
 
-  declare export var StateUtils: {
+  declare var StateUtils: {
     get: (state: NavigationState, key: string) => ?NavigationRoute,
     indexOf: (state: NavigationState, key: string) => number,
     has: (state: NavigationState, key: string) => boolean,
@@ -688,11 +678,11 @@ declare module 'react-navigation' {
     ) => NavigationState,
   };
 
-  declare export function addNavigationHelpers<S: {}>(
+  declare function addNavigationHelpers<S: {}>(
     navigation: NavigationProp<S>
   ): NavigationScreenProp<S>;
 
-  declare export var NavigationActions: {
+  declare var NavigationActions: {
     BACK: 'Navigation/BACK',
     INIT: 'Navigation/INIT',
     NAVIGATE: 'Navigation/NAVIGATE',
@@ -746,7 +736,7 @@ declare module 'react-navigation' {
   > = (
     NavigationView: React$ComponentType<_RouterProp<S, O> & NavigationViewProps>
   ) => NavigationNavigator<S, O, NavigationViewProps>;
-  declare export function createNavigator<
+  declare function createNavigator<
     S: NavigationState,
     O: {},
     NavigatorConfig: {},
@@ -757,7 +747,7 @@ declare module 'react-navigation' {
     navigatorConfig?: NavigatorConfig
   ): _NavigatorCreator<NavigationViewProps, S, O>;
 
-  declare export function StackNavigator(
+  declare function StackNavigator(
     routeConfigMap: NavigationRouteConfigMap,
     stackConfig?: StackNavigatorConfig
   ): NavigationContainer<*, *, *>;
@@ -781,14 +771,14 @@ declare module 'react-navigation' {
     removeClippedSubviews?: boolean,
     containerOptions?: void,
   |};
-  declare export function TabNavigator(
+  declare function TabNavigator(
     routeConfigs: NavigationRouteConfigMap,
     config?: _TabNavigatorConfig
   ): NavigationContainer<*, *, *>;
   declare type _SwitchNavigatorConfig = {|
     ...NavigationSwitchRouterConfig,
   |};
-  declare export function SwitchNavigator(
+  declare function SwitchNavigator(
     routeConfigs: NavigationRouteConfigMap,
     config?: _SwitchNavigatorConfig
   ): NavigationContainer<*, *, *>;
@@ -812,17 +802,17 @@ declare module 'react-navigation' {
     ..._DrawerViewConfig,
     containerConfig?: void,
   }>;
-  declare export function DrawerNavigator(
+  declare function DrawerNavigator(
     routeConfigs: NavigationRouteConfigMap,
     config?: _DrawerNavigatorConfig
   ): NavigationContainer<*, *, *>;
 
-  declare export function StackRouter(
+  declare function StackRouter(
     routeConfigs: NavigationRouteConfigMap,
     stackConfig?: NavigationStackRouterConfig
   ): NavigationRouter<*, NavigationStackScreenOptions>;
 
-  declare export function TabRouter(
+  declare function TabRouter(
     routeConfigs: NavigationRouteConfigMap,
     config?: NavigationTabRouterConfig
   ): NavigationRouter<*, *>;
@@ -840,7 +830,7 @@ declare module 'react-navigation' {
       prevTransitionProps: ?NavigationTransitionProps
     ) => React$Node,
   };
-  declare export var Transitioner: React$ComponentType<_TransitionerProps>;
+  declare var Transitioner: React$ComponentType<_TransitionerProps>;
 
   declare type _CardStackTransitionerProps = {
     headerMode: HeaderMode,
@@ -854,7 +844,7 @@ declare module 'react-navigation' {
      */
     transitionConfig?: () => TransitionConfig,
   } & NavigationNavigatorProps<NavigationStackScreenOptions, NavigationState>;
-  declare export var CardStackTransitioner: React$ComponentType<
+  declare var CardStackTransitioner: React$ComponentType<
     _CardStackTransitionerProps
   >;
 
@@ -880,7 +870,7 @@ declare module 'react-navigation' {
     scene: NavigationScene,
     index: number,
   };
-  declare export var CardStack: React$ComponentType<_CardStackProps>;
+  declare var CardStack: React$ComponentType<_CardStackProps>;
 
   declare type _CardProps = {
     ...$Exact<NavigationSceneRendererProps>,
@@ -889,7 +879,7 @@ declare module 'react-navigation' {
     pointerEvents: string,
     style: any,
   };
-  declare export var Card: React$ComponentType<_CardProps>;
+  declare var Card: React$ComponentType<_CardProps>;
 
   declare type _SafeAreaViewForceInsetValue = 'always' | 'never' | number;
   declare type _SafeAreaViewProps = {
@@ -904,9 +894,9 @@ declare module 'react-navigation' {
     children?: React$Node,
     style?: AnimatedViewStyleProp,
   };
-  declare export var SafeAreaView: React$ComponentType<_SafeAreaViewProps>;
+  declare var SafeAreaView: React$ComponentType<_SafeAreaViewProps>;
 
-  declare export var Header: React$ComponentType<HeaderProps> & {
+  declare var Header: React$ComponentType<HeaderProps> & {
     HEIGHT: number,
   };
 
@@ -915,7 +905,7 @@ declare module 'react-navigation' {
     selectionColor?: string | number,
     style?: AnimatedTextStyleProp,
   };
-  declare export var HeaderTitle: React$ComponentType<_HeaderTitleProps>;
+  declare var HeaderTitle: React$ComponentType<_HeaderTitleProps>;
 
   declare type _HeaderBackButtonProps = {
     onPress?: () => void,
@@ -926,7 +916,7 @@ declare module 'react-navigation' {
     truncatedTitle?: ?string,
     width?: ?number,
   };
-  declare export var HeaderBackButton: React$ComponentType<
+  declare var HeaderBackButton: React$ComponentType<
     _HeaderBackButtonProps
   >;
 
@@ -946,7 +936,7 @@ declare module 'react-navigation' {
     navigation: NavigationScreenProp<NavigationState>,
     router: NavigationRouter<NavigationState, NavigationDrawerScreenOptions>,
   };
-  declare export var DrawerView: React$ComponentType<_DrawerViewProps>;
+  declare var DrawerView: React$ComponentType<_DrawerViewProps>;
 
   declare type _DrawerScene = {
     route: NavigationRoute,
@@ -976,7 +966,7 @@ declare module 'react-navigation' {
     iconContainerStyle?: ViewStyleProp,
     drawerPosition: 'left' | 'right',
   };
-  declare export var DrawerItems: React$ComponentType<_DrawerItemsProps>;
+  declare var DrawerItems: React$ComponentType<_DrawerItemsProps>;
 
   declare type _TabViewProps = {
     tabBarComponent?: React$ElementType,
@@ -993,7 +983,7 @@ declare module 'react-navigation' {
     navigation: NavigationScreenProp<NavigationState>,
     router: NavigationRouter<NavigationState, NavigationTabScreenOptions>,
   };
-  declare export var TabView: React$ComponentType<_TabViewProps>;
+  declare var TabView: React$ComponentType<_TabViewProps>;
 
   declare type _TabBarTopProps = {
     activeTintColor: string,
@@ -1019,7 +1009,7 @@ declare module 'react-navigation' {
     labelStyle?: TextStyleProp,
     iconStyle?: ViewStyleProp,
   };
-  declare export var TabBarTop: React$ComponentType<_TabBarTopProps>;
+  declare var TabBarTop: React$ComponentType<_TabBarTopProps>;
 
   declare type _TabBarBottomProps = {
     activeTintColor: string,
@@ -1050,15 +1040,15 @@ declare module 'react-navigation' {
     tabStyle?: ViewStyleProp,
     showIcon?: boolean,
   };
-  declare export var TabBarBottom: React$ComponentType<_TabBarBottomProps>;
+  declare var TabBarBottom: React$ComponentType<_TabBarBottomProps>;
 
   declare type _NavigationInjectedProps = {
     navigation: NavigationScreenProp<NavigationStateRoute>,
   };
-  declare export function withNavigation<T: {}>(
+  declare function withNavigation<T: {}>(
     Component: React$ComponentType<T & _NavigationInjectedProps>
   ): React$ComponentType<T>;
-  declare export function withNavigationFocus<T: {}>(
+  declare function withNavigationFocus<T: {}>(
     Component: React$ComponentType<T & _NavigationInjectedProps>
   ): React$ComponentType<T>;
 }
